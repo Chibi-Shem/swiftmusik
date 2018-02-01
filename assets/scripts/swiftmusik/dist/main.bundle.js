@@ -450,6 +450,7 @@ var http_1 = __webpack_require__("../../../common/esm5/http.js");
 var ngx_y2_player_1 = __webpack_require__("../../../../ngx-y2-player/ngx-y2-player.js");
 var api_1 = __webpack_require__("../../../../../src/app/constants/api.ts");
 var video_structs_1 = __webpack_require__("../../../../../src/app/structs/video.structs.ts");
+var api_ts_1 = __webpack_require__("../../../../../src/app/constants/api.ts");
 var LandingComponent = /** @class */ (function () {
     function LandingComponent(http, ref, window) {
         this.http = http;
@@ -485,7 +486,7 @@ var LandingComponent = /** @class */ (function () {
             encrypted: true
         });
         var that = this;
-        this.channel = this.pusher.subscribe('sk-pusher-channel-afjnw21a');
+        this.channel = this.pusher.subscribe("" + api_ts_1.PUSHER_CHANNEL);
         this.channel.bind('VIDEO_ADD', function (data) {
             that.loadQueue();
         });
@@ -615,8 +616,9 @@ exports.MainModule = MainModule;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.API_DOMAIN = 'http://127.0.0.1:8000';
-exports.API_PATH = '/api/';
+exports.API_DOMAIN = window.base_url;
+exports.PUSHER_CHANNEL = window.pusher_channel;
+exports.API_PATH = 'api/';
 exports.VIDEO_API_PATH = function () { return exports.API_PATH + "videos/"; };
 exports.VIDEO_API_URL = function () { return "" + exports.API_DOMAIN + exports.VIDEO_API_PATH(); };
 
