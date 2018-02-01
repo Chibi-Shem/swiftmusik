@@ -496,6 +496,7 @@ var LandingComponent = /** @class */ (function () {
         this.http.get("" + api_1.VIDEO_API_URL())
             .subscribe(function (result) {
             _this.queue = result;
+            _this.checkPlayingVideo();
             _this.ref.detectChanges();
         }, function (error) {
             _this.queueError = true;
@@ -512,6 +513,16 @@ var LandingComponent = /** @class */ (function () {
         }, function (error) {
             _this.errors = error.error;
         });
+    };
+    LandingComponent.prototype.checkPlayingVideo = function () {
+        console.log();
+        var that = this;
+        var jplay = R.prop('j', this.videoPlayer.videoPlayer);
+        var playerState = R.prop('playerState', jplay);
+        var playerInstance = this.videoPlayer.videoPlayer;
+        if (playerState === -1 || playerState === 5 || playerState === 0) {
+            this.playVideo(playerInstance, this.getNextVideoId());
+        }
     };
     LandingComponent.prototype.getNextVideoId = function () {
         var first = R.head(this.queue);
