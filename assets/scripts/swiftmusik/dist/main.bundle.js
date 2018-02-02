@@ -95,6 +95,7 @@ var ngx_cookie_service_1 = __webpack_require__("../../../../ngx-cookie-service/i
 var ngx_y2_player_1 = __webpack_require__("../../../../ngx-y2-player/ngx-y2-player.js");
 var app_component_1 = __webpack_require__("../../../../../src/app/app.component.ts");
 var components_module_1 = __webpack_require__("../../../../../src/app/components/components.module.ts");
+var commons_module_1 = __webpack_require__("../../../../../src/app/commons/commons.module.ts");
 var csrf_service_1 = __webpack_require__("../../../../../src/app/commons/services/interceptors/csrf.service.ts");
 var window_service_1 = __webpack_require__("../../../../../src/app/commons/services/references/window.service.ts");
 var index_1 = __webpack_require__("../../../../../src/app/states/index.ts");
@@ -118,6 +119,7 @@ var AppModule = /** @class */ (function () {
                     otherwise: '/not-found',
                 }),
                 components_module_1.ComponentsModule,
+                commons_module_1.CommonsModule,
             ],
             providers: [
                 window_service_1.WindowRef,
@@ -130,6 +132,42 @@ var AppModule = /** @class */ (function () {
     return AppModule;
 }());
 exports.AppModule = AppModule;
+
+
+/***/ }),
+
+/***/ "../../../../../src/app/commons/commons.module.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("../../../core/esm5/core.js");
+var common_1 = __webpack_require__("../../../common/esm5/common.js");
+var interceptors_module_1 = __webpack_require__("../../../../../src/app/commons/services/interceptors/interceptors.module.ts");
+var playlist_module_1 = __webpack_require__("../../../../../src/app/commons/services/playlist/playlist.module.ts");
+var CommonsModule = /** @class */ (function () {
+    function CommonsModule() {
+    }
+    CommonsModule = __decorate([
+        core_1.NgModule({
+            imports: [
+                common_1.CommonModule,
+                interceptors_module_1.InterceptorsModule,
+                playlist_module_1.PlaylistModule
+            ],
+            declarations: []
+        })
+    ], CommonsModule);
+    return CommonsModule;
+}());
+exports.CommonsModule = CommonsModule;
 
 
 /***/ }),
@@ -168,6 +206,111 @@ var CsrfService = /** @class */ (function () {
 }());
 exports.CsrfService = CsrfService;
 ;
+
+
+/***/ }),
+
+/***/ "../../../../../src/app/commons/services/interceptors/interceptors.module.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("../../../core/esm5/core.js");
+var common_1 = __webpack_require__("../../../common/esm5/common.js");
+var InterceptorsModule = /** @class */ (function () {
+    function InterceptorsModule() {
+    }
+    InterceptorsModule = __decorate([
+        core_1.NgModule({
+            imports: [
+                common_1.CommonModule
+            ],
+            declarations: []
+        })
+    ], InterceptorsModule);
+    return InterceptorsModule;
+}());
+exports.InterceptorsModule = InterceptorsModule;
+
+
+/***/ }),
+
+/***/ "../../../../../src/app/commons/services/playlist/logs.service.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("../../../core/esm5/core.js");
+var http_1 = __webpack_require__("../../../common/esm5/http.js");
+var api_1 = __webpack_require__("../../../../../src/app/constants/api.ts");
+var LogsService = /** @class */ (function () {
+    function LogsService(http) {
+        this.http = http;
+    }
+    LogsService.prototype.getLatest = function () {
+        return this.http.get("" + api_1.PLAYLIST_LOG_API_PATH());
+    };
+    LogsService.prototype.addLog = function (data) {
+        return this.http.post("" + api_1.PLAYLIST_LOG_API_PATH(), data);
+    };
+    LogsService = __decorate([
+        core_1.Injectable(),
+        __metadata("design:paramtypes", [http_1.HttpClient])
+    ], LogsService);
+    return LogsService;
+}());
+exports.LogsService = LogsService;
+
+
+/***/ }),
+
+/***/ "../../../../../src/app/commons/services/playlist/playlist.module.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("../../../core/esm5/core.js");
+var common_1 = __webpack_require__("../../../common/esm5/common.js");
+var logs_service_1 = __webpack_require__("../../../../../src/app/commons/services/playlist/logs.service.ts");
+var PlaylistModule = /** @class */ (function () {
+    function PlaylistModule() {
+    }
+    PlaylistModule = __decorate([
+        core_1.NgModule({
+            imports: [
+                common_1.CommonModule
+            ],
+            declarations: [],
+            providers: [logs_service_1.LogsService]
+        })
+    ], PlaylistModule);
+    return PlaylistModule;
+}());
+exports.PlaylistModule = PlaylistModule;
 
 
 /***/ }),
@@ -449,12 +592,14 @@ var core_1 = __webpack_require__("../../../core/esm5/core.js");
 var http_1 = __webpack_require__("../../../common/esm5/http.js");
 var ngx_y2_player_1 = __webpack_require__("../../../../ngx-y2-player/ngx-y2-player.js");
 var api_1 = __webpack_require__("../../../../../src/app/constants/api.ts");
+var logs_service_1 = __webpack_require__("../../../../../src/app/commons/services/playlist/logs.service.ts");
 var video_structs_1 = __webpack_require__("../../../../../src/app/structs/video.structs.ts");
 var api_ts_1 = __webpack_require__("../../../../../src/app/constants/api.ts");
 var LandingComponent = /** @class */ (function () {
-    function LandingComponent(http, ref, window) {
+    function LandingComponent(http, ref, logs, window) {
         this.http = http;
         this.ref = ref;
+        this.logs = logs;
         this.ENDED_STATE = 0;
         this.video = new video_structs_1.Video('');
         this.queueError = false;
@@ -474,6 +619,7 @@ var LandingComponent = /** @class */ (function () {
     LandingComponent.prototype.ngOnInit = function () {
         this.queue = [];
         this.loadQueue();
+        this.playCurrentVideo();
         this.setupPusher();
     };
     LandingComponent.prototype.ngOnDestroy = function () {
@@ -491,17 +637,22 @@ var LandingComponent = /** @class */ (function () {
             that.loadQueue();
         });
     };
+    /* LOAD PLAYLIST
+     * desc : retrieve and load the current playlist
+     */
     LandingComponent.prototype.loadQueue = function () {
         var _this = this;
-        this.http.get("" + api_1.VIDEO_API_URL())
+        this.http.get("" + api_1.PLAYLIST_API_PATH())
             .subscribe(function (result) {
             _this.queue = result;
-            _this.checkPlayingVideo();
             _this.ref.detectChanges();
         }, function (error) {
             _this.queueError = true;
         });
     };
+    /* ADD NEW VIDEO
+     * desc : add new video in the playlist
+     */
     LandingComponent.prototype.onAddVideoSubmit = function () {
         var _this = this;
         this.errors = {};
@@ -514,47 +665,88 @@ var LandingComponent = /** @class */ (function () {
             _this.errors = error.error;
         });
     };
-    LandingComponent.prototype.checkPlayingVideo = function () {
-        console.log();
-        var that = this;
-        var jplay = R.prop('j', this.videoPlayer.videoPlayer);
-        var playerState = R.prop('playerState', jplay);
-        var playerInstance = this.videoPlayer.videoPlayer;
-        if (playerState === -1 || playerState === 5 || playerState === 0) {
-            this.playVideo(playerInstance, this.getNextVideoId());
-        }
-    };
-    LandingComponent.prototype.getNextVideoId = function () {
-        var first = R.head(this.queue);
-        var newList = R.drop(1, this.queue);
-        this.queue = newList;
-        this.ref.detectChanges();
-        return first;
-    };
-    LandingComponent.prototype.playVideo = function (player, videoObj) {
+    /* PLAY CURRENT VIDEO
+     * desc : play the current video
+     */
+    LandingComponent.prototype.playCurrentVideo = function () {
         var _this = this;
-        // Tell api that we already updated our playlist. Get an updated version
-        if (videoObj) {
-            this.http.put("" + api_1.VIDEO_API_URL() + R.prop('id', videoObj) + "/", { status: 'finished' })
-                .subscribe(function (result) {
-                _this.loadQueue();
-            });
-            // Update video player
-            player.loadVideoById(R.prop('parsed_id', videoObj));
-        }
+        this.http.get(api_1.PLAYLIST_API_PATH() + "current/")
+            .subscribe(function (result) {
+            if (Object.keys(result).length > 0) {
+                var playerInstance = _this.videoPlayer.videoPlayer;
+                _this.playVideo(playerInstance, result['video_code']);
+                console.log(_this.getCurrentTime(), result['timestamp']);
+                var seconds = _this.timeDiff(result['now'], result['timestamp']);
+                console.log(seconds);
+                playerInstance.seekTo(seconds, true);
+                _this.curVideo = _this.getVideoObj(result['video_id']);
+            }
+            else {
+                console.log('ASDSADSA');
+                _this.playNextVideo();
+            }
+        });
+    };
+    LandingComponent.prototype.playNextVideo = function () {
+        var _this = this;
+        this.http.get(api_1.PLAYLIST_API_PATH() + "next/")
+            .subscribe(function (result) {
+            var playerInstance = _this.videoPlayer.videoPlayer;
+            _this.playVideo(playerInstance, result['parsed_id']);
+            _this.addLog(result['id'], 'play');
+            _this.updateVideoStatus(result['id'], 'playing');
+            _this.curVideo = _this.getVideoObj(result['id']);
+        });
+    };
+    LandingComponent.prototype.updateVideoStatus = function (videoId, status) {
+        // update video
+        this.http.put("" + api_1.VIDEO_API_URL() + videoId + "/", { status: status })
+            .subscribe(function (result) {
+        });
+    };
+    LandingComponent.prototype.addLog = function (videoId, status) {
+        this.logs.addLog({ video: videoId, action: status })
+            .subscribe(function (result) {
+            console.log('log added.');
+        });
+    };
+    //// UTILS
+    LandingComponent.prototype.playVideo = function (player, code) {
+        player.loadVideoById(code);
+    };
+    LandingComponent.prototype.toSeconds = function (time_str) {
+        // Extract hours, minutes and seconds
+        var parts = time_str.split(':');
+        // compute  and return total seconds
+        return parts[0] * 3600 + // an hour has 3600 seconds
+            parts[1] * 60 + // a minute has 60 seconds
+            +parts[2]; // seconds
+    };
+    LandingComponent.prototype.timeDiff = function (a, b) {
+        return Math.abs(this.toSeconds(a) - this.toSeconds(b));
+    };
+    LandingComponent.prototype.getCurrentTime = function () {
+        // TODO: should get this in the server
+        var d = new Date();
+        return d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+    };
+    LandingComponent.prototype.getVideoObj = function (id) {
+        return R.find(R.propEq('id', id))(this.queue);
     };
     LandingComponent.prototype.onVideoReady = function () {
+        var _this = this;
         var that = this;
         var jplay = R.prop('j', this.videoPlayer.videoPlayer);
         var playerState = R.prop('playerState', jplay);
         var playerInstance = this.videoPlayer.videoPlayer;
         if (playerState === -1 || playerState === 5) {
-            this.playVideo(playerInstance, this.getNextVideoId());
+            this.playCurrentVideo();
         }
         this.videoPlayer.videoPlayer.addEventListener('onStateChange', function (event$) {
             if (R.prop('data', event$) === 0) {
-                // Video Already Stopped playing. Play next video
-                that.playVideo(playerInstance, that.getNextVideoId());
+                _this.addLog(_this.curVideo.id, 'finish');
+                _this.updateVideoStatus(_this.curVideo.id, 'finished');
+                _this.playNextVideo();
             }
         });
     };
@@ -568,9 +760,10 @@ var LandingComponent = /** @class */ (function () {
             template: __webpack_require__("../../../../../src/app/components/main/landing/landing.component.html"),
             styles: [__webpack_require__("../../../../../src/app/components/main/landing/landing.component.scss")]
         }),
-        __param(2, core_1.Inject('Window')),
+        __param(3, core_1.Inject('Window')),
         __metadata("design:paramtypes", [http_1.HttpClient,
             core_1.ChangeDetectorRef,
+            logs_service_1.LogsService,
             Window])
     ], LandingComponent);
     return LandingComponent;
@@ -632,6 +825,8 @@ exports.PUSHER_CHANNEL = window.pusher_channel;
 exports.API_PATH = 'api/';
 exports.VIDEO_API_PATH = function () { return exports.API_PATH + "videos/"; };
 exports.VIDEO_API_URL = function () { return "" + exports.API_DOMAIN + exports.VIDEO_API_PATH(); };
+exports.PLAYLIST_API_PATH = function () { return exports.API_PATH + "playlist/"; };
+exports.PLAYLIST_LOG_API_PATH = function () { return exports.PLAYLIST_API_PATH() + "logs/"; };
 
 
 /***/ }),
