@@ -5,10 +5,10 @@ from .views import VideoViewSet, PlaylistLogViewSet, Playlist
 urlpatterns = [
     path('videos/', VideoViewSet.as_view({
         'get': 'list',
+        'post': 'create',
     }), name='videos'),
     path('videos/<int:id>/', VideoViewSet.as_view({
         'get': 'detail',
-        'post': 'create',
         'put': 'update',
     }), name='videos'),
 
