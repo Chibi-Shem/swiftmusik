@@ -3,6 +3,30 @@ from django.db import models
 from django.conf import settings
 
 
+class PlaylistLog(models.Model):
+    """ Action logs for playlist.
+        TODO: implement playlist. right now it only run 1 playlist
+    """
+    PLAY = 'play'
+    PAUSE = 'pause'
+    STOP = 'stop'
+    FINISH = 'finish'
+
+    ACTION = (
+        (PLAY, 'Play'),
+        (PAUSE, 'Pause'),
+        (STOP, 'Stop'),
+        (FINISH, 'Finish'),
+    )
+
+    video = models.ForeignKey('Video', on_delete=models.CASCADE)
+    action = models.CharField(max_length=15, choices=ACTION, default=PLAY)
+    timestamp = models.TimeField(auto_now_add=True)
+
+    def __str__(self):
+        return "{} ({}): {}".format(self.video.parsed_title, self.action, self.timestamp)
+
+
 class Video(models.Model):
     """Videos that are to be added by the users to the playlist
     """

@@ -3,7 +3,8 @@ import { Component, OnInit, ViewChild, ChangeDetectorRef, Inject, OnDestroy } fr
 import { HttpClient } from '@angular/common/http';
 import { NgxY2PlayerComponent, NgxY2PlayerOptions } from 'ngx-y2-player';
 
-import { VIDEO_API_URL } from 'app/constants/api';
+import { VIDEO_API_URL, PLAYLIST_API_PATH } from 'app/constants/api';
+import { LogsService } from 'app/commons/services/playlist/logs.service';
 
 import { Video } from 'app/structs/video.structs';
 
@@ -21,6 +22,7 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   video = new Video('');
   queue: any;
+  curVideo: any;
   queueError = false;
   submitSuccess = false;
   errors = {};
@@ -39,12 +41,14 @@ export class LandingComponent implements OnInit, OnDestroy {
   constructor(
     private http: HttpClient,
     private ref: ChangeDetectorRef,
+    private logs: LogsService,
     @Inject('Window') window: Window
     ) { }
 
   ngOnInit() {
     this.queue = [];
     this.loadQueue();
+    this.playCurrentVideo();
 
     this.setupPusher();
   }
@@ -68,12 +72,14 @@ export class LandingComponent implements OnInit, OnDestroy {
       });
   }
 
+  /* LOAD PLAYLIST
+   * desc : retrieve and load the current playlist
+   */
   loadQueue() {
-    this.http.get(`${VIDEO_API_URL()}`)
+    this.http.get(`${PLAYLIST_API_PATH()}`)
       .subscribe(
         result => {
           this.queue = result;
-          this.checkPlayingVideo();
           this.ref.detectChanges();
         },
         error => {
@@ -82,6 +88,9 @@ export class LandingComponent implements OnInit, OnDestroy {
       )
   }
 
+  /* ADD NEW VIDEO
+   * desc : add new video in the playlist
+   */
   onAddVideoSubmit() {
     this.errors = {};
     this.submitSuccess = false;
@@ -98,40 +107,96 @@ export class LandingComponent implements OnInit, OnDestroy {
       )
   }
 
-  checkPlayingVideo() {
-    console.log()
-    const that = this;
-    const jplay = R.prop('j', this.videoPlayer.videoPlayer);
-    const playerState = R.prop('playerState', jplay);
-    const playerInstance = this.videoPlayer.videoPlayer;
+  /* PLAY CURRENT VIDEO
+   * desc : play the current video
+   */
+  playCurrentVideo() {
+    this.http.get(`${PLAYLIST_API_PATH()}current/`)
+      .subscribe(
+        result => {
 
-    if (playerState === -1 || playerState === 5 || playerState === 0) {
-      this.playVideo(playerInstance, this.getNextVideoId())
-    }
-  }
+          if (Object.keys(result).length > 0) {
+            const playerInstance = this.videoPlayer.videoPlayer;
+            this.playVideo(playerInstance, result['video_code']);
 
-  getNextVideoId() {
-    const first = R.head(this.queue);
-    const newList = R.drop(1, this.queue);
-    this.queue = newList;
-    this.ref.detectChanges();
-    return first;
-  }
+            console.log(this.getCurrentTime(), result['timestamp']);
 
-  playVideo(player, videoObj) {
-    // Tell api that we already updated our playlist. Get an updated version
-    if (videoObj) {
-      this.http.put(`${VIDEO_API_URL()}${R.prop('id', videoObj)}/`, {status: 'finished'})
-        .subscribe(
-          result => {
-            this.loadQueue();
+            const seconds = this.timeDiff(result['now'], result['timestamp']);
+            console.log(seconds);
+            playerInstance.seekTo(seconds, true);
+
+            this.curVideo = this.getVideoObj(result['video_id']);
+          } else {
+            console.log('ASDSADSA');
+            this.playNextVideo();
           }
-        )
-
-      // Update video player
-      player.loadVideoById(R.prop('parsed_id', videoObj));
-    }
+        }
+      )
   }
+
+  playNextVideo() {
+    this.http.get(`${PLAYLIST_API_PATH()}next/`)
+      .subscribe(
+        result => {
+          const playerInstance = this.videoPlayer.videoPlayer;
+          this.playVideo(playerInstance, result['parsed_id']);
+
+          this.addLog(result['id'], 'play');
+          this.updateVideoStatus(result['id'], 'playing');
+
+          this.curVideo = this.getVideoObj(result['id']);
+        }
+      )
+  }
+
+  updateVideoStatus(videoId, status) {
+    // update video
+    this.http.put(`${VIDEO_API_URL()}${videoId}/`, {status: status})
+      .subscribe(
+        result => {
+
+        }
+      )
+  }
+
+  addLog(videoId, status) {
+    this.logs.addLog({video: videoId, action: status})
+      .subscribe(
+        result => {
+          console.log('log added.');
+        }
+      )
+  }
+
+  //// UTILS
+  playVideo(player, code) {
+    player.loadVideoById(code);
+  }
+
+  toSeconds(time_str) {
+    // Extract hours, minutes and seconds
+    var parts = time_str.split(':');
+    // compute  and return total seconds
+    return parts[0] * 3600 + // an hour has 3600 seconds
+    parts[1] * 60 + // a minute has 60 seconds
+    +
+    parts[2]; // seconds
+  }
+
+  timeDiff(a, b) {
+    return Math.abs(this.toSeconds(a) - this.toSeconds(b));
+  }
+
+  getCurrentTime() {
+    // TODO: should get this in the server
+    var d = new Date();
+    return `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
+  }
+
+  getVideoObj(id) {
+    return R.find(R.propEq('id', id))(this.queue);
+  }
+
 
   onVideoReady() {
     const that = this;
@@ -140,15 +205,21 @@ export class LandingComponent implements OnInit, OnDestroy {
     const playerInstance = this.videoPlayer.videoPlayer;
 
     if (playerState === -1 || playerState === 5) {
-      this.playVideo(playerInstance, this.getNextVideoId())
+      this.playCurrentVideo();
     }
 
     this.videoPlayer.videoPlayer.addEventListener('onStateChange', (event$) => {
+
       if (R.prop('data', event$) === 0) {
-        // Video Already Stopped playing. Play next video
-        that.playVideo(playerInstance, that.getNextVideoId());
+        this.addLog(this.curVideo.id, 'finish');
+        this.updateVideoStatus(this.curVideo.id, 'finished');
+
+        this.playNextVideo();
       }
-    })
+
+    });
+
+
   }
 
 }

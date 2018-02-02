@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Video
+from .models import Video, PlaylistLog
 
 
 class VideoAdmin(admin.ModelAdmin):
@@ -11,3 +11,4 @@ class VideoAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Video, VideoAdmin)
+admin.site.register(PlaylistLog)

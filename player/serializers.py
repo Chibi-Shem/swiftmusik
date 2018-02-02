@@ -4,7 +4,7 @@ from urllib.parse import urlencode
 from django.conf import settings
 from rest_framework import serializers
 
-from player.models import Video
+from player.models import Video, PlaylistLog
 
 
 class VideoSerializer(serializers.ModelSerializer):
@@ -45,3 +45,14 @@ class VideoSerializer(serializers.ModelSerializer):
         except Exception as e:
             raise serializers.ValidationError({'url': ['Invalid Youtube URL', ]})
         return validated_data
+
+
+class PlaylistLogSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PlaylistLog
+        fields = ('id', 'video', 'action', 'timestamp')
+
+    def update(self, instance,  data):
+        data.pop('parse_id', None)
+        return super(PlaylistLogSerializer, self).update(instance, **data)

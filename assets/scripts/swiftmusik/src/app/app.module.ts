@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 
 import { ComponentsModule } from 'app/components/components.module';
 
+import { CommonsModule } from 'app/commons/commons.module';
 import { CsrfService } from 'app/commons/services/interceptors/csrf.service';
 import { WindowRef } from 'app/commons/services/references/window.service';
 
@@ -34,6 +35,7 @@ import { APP_STATES } from 'app/states/index';
     }),
 
     ComponentsModule,
+    CommonsModule,
   ],
   providers: [
     WindowRef,

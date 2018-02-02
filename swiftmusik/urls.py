@@ -25,12 +25,12 @@ from player.views import VideoViewSet
 from home.views import HomeView
 
 
-router = routers.SimpleRouter()
-router.register(r'videos', VideoViewSet)
+# router = routers.SimpleRouter()
+# router.register(r'videos', VideoViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('api/', include(router.urls)),
+    path('api/', include('player.urls')), # FIX THIS. i don't know how to simple router lol
     re_path(r'^(.*)$', HomeView.as_view())
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
